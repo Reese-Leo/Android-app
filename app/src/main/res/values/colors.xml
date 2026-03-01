@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="colorAccent">#02D0E6</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#808080</color>
+    <color name="lightGray">#E3E3E3</color>
+    <color name="red">#F44336</color>
+    <!-- QMUI 库颜色 -->
+    <color name="qmui_config_color_blue">#1B88EE</color>
+    <color name="qmui_config_color_white">#FFFFFF</color>
+    <color name="qmui_config_color_black">#000000</color>
+    <color name="qmui_config_color_gray_1">#353C46</color>
+    <color name="qmui_config_color_gray_2">#49505A</color>
+    <color name="qmui_config_color_gray_3">#5D646E</color>
+    <color name="qmui_config_color_gray_4">#717882</color>
+    <color name="qmui_config_color_gray_5">#858C96</color>
+    <color name="qmui_config_color_gray_6">#99A0AA</color>
+    <color name="qmui_config_color_gray_7">#ADB4BE</color>
+    <color name="qmui_config_color_gray_8">#C4C8D0</color>
+    <color name="qmui_config_color_gray_9">#D8DCE4</color>
+    <color name="qmui_config_color_red">#FA3A3A</color>
+    <color name="qmui_config_color_link">#547FB0</color>
+    <color name="qmui_config_color_pressed">#EEEEF0</color>
+    <color name="qmui_config_color_transparent">#00000000</color>
+    <color name="qmui_config_color_background">#F5F5F5</color>
+    <color name="qmui_config_color_background_pressed">#E0E0E0</color>
+</resources>

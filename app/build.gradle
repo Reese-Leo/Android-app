@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+
+static def gitVersionCode() {
+    def cmd = 'git rev-list HEAD --first-parent --count'
+    if (cmd.execute().text != '') {
+        return cmd.execute().text.trim().toInteger()
+    } else {
+        return 100
+    }
+}
+
+static def gitVersionTag() {
+    def cmd = 'git describe --tags'
+    def version = cmd.execute().text.trim()
+
+//    def pattern = "-(\\d+)-g"
+//    def matcher = version =~ pattern
+
+//    if (matcher) {
+//        version = version.substring(0, matcher.start()) + "." + matcher[0][1]
+//    } else {
+//        version = version + ".0"
+//    }
+    def pattern = "-(\\d+)-g"
+    def matcher = version =~ pattern
+
+    if (matcher) {
+        version = version.substring(0, matcher.start()) + "." + matcher[0][1]
+    }
+
+    return version
+}
+
+//println gitVersionTag()
+
+android {
+    namespace "com.qc.mycomic"
+    compileSdkVersion 33
+    buildToolsVersion "33.0.0"
+
+    defaultConfig {
+        applicationId "com.qc.mycomic"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode gitVersionCode()
+        versionName gitVersionTag()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packaging {
+        jniLibs {
+            pickFirsts += ['**/libijkffmpeg.so', '**/libijkplayer.so', '**/libijksdl.so']
+        }
+    }
+
+    applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                outputFileName = "MyComic-${variant.versionName}.apk"
+            }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(path: ':common')
+}
