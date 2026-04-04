@@ -18,6 +18,9 @@ public interface AppConstant {
 
     String IMG_PATH = APP_PATH + "/Image";
 
+    /** 漫画整话离线图，按作品/章节分子目录保存 */
+    String OFFLINE_CHAPTER_PATH = APP_PATH + "/OfflineChapter";
+
     String AUTO_SAVE_PATH = APP_PATH + "/AutoBackup";
 
     int COMIC_CODE = 1;

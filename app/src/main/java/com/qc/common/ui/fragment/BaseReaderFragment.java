@@ -329,6 +329,8 @@ public abstract class BaseReaderFragment extends BaseDataFragment<Content> imple
             onBackPressed();
         });
 
+        setupOfflineDownloadIfNeeded(bottomView);
+
         recycleView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
@@ -349,6 +351,20 @@ public abstract class BaseReaderFragment extends BaseDataFragment<Content> imple
         });
 
         setSettingsView(settingsView);
+    }
+
+    /**
+     * 漫画阅读器可重写以显示「下载本话」；默认隐藏。
+     */
+    protected void setupOfflineDownloadIfNeeded(View bottomView) {
+        View llDownload = bottomView.findViewById(R.id.llDownload);
+        if (llDownload != null) {
+            llDownload.setVisibility(View.GONE);
+        }
+    }
+
+    protected List<Content> getReaderContents() {
+        return contentList;
     }
 
     protected int first;

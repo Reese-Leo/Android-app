@@ -32,6 +32,10 @@ public class NetUtil {
 
     private static OkHttpClient okHttpClient = new OkHttpClient();
 
+    public static OkHttpClient getOkHttpClient() {
+        return okHttpClient;
+    }
+
     /**
      * 根据url，获得默认request
      *

@@ -13,11 +13,15 @@ import com.qc.common.constant.TmpData;
 import com.qc.common.en.SettingEnum;
 import com.qc.common.self.ImageConfig;
 import com.qc.common.ui.adapter.ComicReaderAdapter;
+import com.qc.common.util.ComicChapterOfflineDownloader;
 import com.qc.common.util.EntityHelper;
 import com.qc.common.util.ImgUtil;
 import com.qc.common.util.SettingUtil;
 import com.qc.mycomic.R;
 import com.qc.mycomic.ui.fragment.ReaderDetailFragment;
+
+import java.io.File;
+import java.util.List;
 
 import the.one.base.widge.TheCheckBox;
 import top.luqichuang.common.model.Content;
@@ -33,6 +37,7 @@ import top.luqichuang.common.model.Source;
 public class ComicReaderFragment extends BaseReaderFragment {
 
     private ComicReaderAdapter comicReaderAdapter;
+    private boolean offlineDownloading;
 
     public static ComicReaderFragment getInstance(Entity entity) {
         ComicReaderFragment fragment = new ComicReaderFragment();
@@ -83,6 +88,52 @@ public class ComicReaderFragment extends BaseReaderFragment {
     @Override
     protected void firstLoadView() {
 
+    }
+
+    @Override
+    protected void setupOfflineDownloadIfNeeded(View bottomView) {
+        LinearLayout llDownload = bottomView.findViewById(R.id.llDownload);
+        if (llDownload == null) {
+            return;
+        }
+        llDownload.setVisibility(View.VISIBLE);
+        llDownload.setOnClickListener(v -> onOfflineChapterDownload());
+    }
+
+    private void onOfflineChapterDownload() {
+        List<Content> list = getReaderContents();
+        if (list == null || list.isEmpty()) {
+            showFailTips("暂无页面可下载");
+            return;
+        }
+        if (offlineDownloading) {
+            showFailTips("正在下载中");
+            return;
+        }
+        offlineDownloading = true;
+        showLoadingDialog("正在下载本话到本地");
+        Source source = EntityHelper.commonSource(entity);
+        ComicChapterOfflineDownloader.download(requireContext(), entity, list, source, new ComicChapterOfflineDownloader.Callback() {
+            @Override
+            public void onSuccess(File chapterDir) {
+                if (!isAdded()) {
+                    return;
+                }
+                hideLoadingDialog();
+                offlineDownloading = false;
+                showSuccessTips("已保存：\n" + chapterDir.getAbsolutePath());
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                hideLoadingDialog();
+                offlineDownloading = false;
+                showFailTips("下载失败：" + message);
+            }
+        });
     }
 
     @Override
