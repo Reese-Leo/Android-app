@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.qc.common.constant.AppConstant;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +28,7 @@ import top.luqichuang.common.util.NetUtil;
 /**
  * 将当前话全部图片下载到本地目录（与 Glide 缓存无关，可长期保留）。
  */
-public final class ComicChapterOfflineDownloader implements AppConstant {
+public final class ComicChapterOfflineDownloader {
 
     public interface Callback {
         void onSuccess(File chapterDir);
@@ -67,44 +65,8 @@ public final class ComicChapterOfflineDownloader implements AppConstant {
         });
     }
 
-    /**
-     * 优先使用 SD 卡上的 MyComic/OfflineChapter（需存储权限）；不可写时回退到应用专属外存目录（Android 13+ 等场景无需权限）。
-     */
-    private static File resolveWritableOfflineRoot(Context context) throws IOException {
-        File legacy = new File(OFFLINE_CHAPTER_PATH);
-        if (isDirWritableOrCreatable(legacy)) {
-            return legacy;
-        }
-        File ext = context.getExternalFilesDir(null);
-        if (ext == null) {
-            ext = context.getFilesDir();
-        }
-        File fallback = new File(ext, "OfflineChapter");
-        if (!isDirWritableOrCreatable(fallback)) {
-            throw new IOException("无法创建目录（存储权限或磁盘空间）: " + fallback.getAbsolutePath());
-        }
-        return fallback;
-    }
-
-    private static boolean isDirWritableOrCreatable(File dir) {
-        if (dir == null) {
-            return false;
-        }
-        try {
-            if (dir.exists()) {
-                return dir.isDirectory() && dir.canWrite();
-            }
-            if (dir.mkdirs() || dir.exists()) {
-                return dir.isDirectory() && dir.canWrite();
-            }
-        } catch (SecurityException ignored) {
-            return false;
-        }
-        return false;
-    }
-
     private static File syncDownload(Context context, Entity entity, List<Content> pages, Source source, int chapterId) throws IOException {
-        File baseDir = resolveWritableOfflineRoot(context);
+        File baseDir = OfflineStorageHelper.resolveWritableOfflineRoot(context);
         String comicSeg = safeSegment(entity.getTitle(), 48) + "_id" + entity.getInfoId();
         String chapterSeg = "ch" + chapterId + "_" + safeSegment(entity.getCurChapterTitle(), 32);
         File root = new File(baseDir, comicSeg);

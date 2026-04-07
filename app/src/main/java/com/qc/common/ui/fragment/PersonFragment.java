@@ -41,7 +41,7 @@ import top.luqichuang.common.util.MapUtil;
  */
 public class PersonFragment extends BaseGroupListFragment implements View.OnClickListener, UpdateView {
 
-    private QMUICommonListItemView web, version, change, v1, v2, v3, v4, v5;
+    private QMUICommonListItemView web, version, change, v1, v2, v3, v4, v5, offlineComic;
 
     private UpdatePresenter presenter = new UpdatePresenter();
 
@@ -91,8 +91,9 @@ public class PersonFragment extends BaseGroupListFragment implements View.OnClic
         v3 = CreateDetailItemView("备份数据");
         v4 = CreateDetailItemView("还原数据");
         v5 = CreateDetailItemView("留言反馈", "提出您宝贵的建议", true);
+        offlineComic = CreateDetailItemView("离线漫画", "本机已下载", true);
         addToGroup("设置", change, v1, v2);
-        addToGroup("数据", v3, v4);
+        addToGroup("数据", v3, v4, offlineComic);
         addToGroup("关于", web, v5, version);
     }
 
@@ -171,6 +172,12 @@ public class PersonFragment extends BaseGroupListFragment implements View.OnClic
                     }
                 }
             });
+        } else if (view == offlineComic) {
+            if (TmpData.contentCode != AppConstant.COMIC_CODE) {
+                showFailTips("请先在「切换阅读内容」中选择漫画");
+                return;
+            }
+            startFragment(new OfflineComicListFragment());
         } else if (view == v5) {
             String url = "https://gitee.com/luqichuang/MyComic/issues/new";
             Uri uri = Uri.parse(url);

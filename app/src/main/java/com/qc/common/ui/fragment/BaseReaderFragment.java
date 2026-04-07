@@ -450,7 +450,7 @@ public abstract class BaseReaderFragment extends BaseDataFragment<Content> imple
     protected void requestServer() {
         if (contentList == null || isForce) {
             isForce = false;
-            presenter.loadContentInfoList(entity);
+            presenter.loadContentInfoList(entity, getContext());
         } else {
             if (isLoadNext) {
                 EntityHelper.initChapterId(entityInfo, contentList.get(contentList.size() - 1).getChapterId());
@@ -458,7 +458,7 @@ public abstract class BaseReaderFragment extends BaseDataFragment<Content> imple
                 EntityHelper.initChapterId(entityInfo, curChapterId);
             }
             if (EntityHelper.canLoad(entityInfo, isLoadNext)) {
-                presenter.loadContentInfoList(entity);
+                presenter.loadContentInfoList(entity, getContext());
             } else if (isLoadNext) {
                 onComplete(null);
             } else {

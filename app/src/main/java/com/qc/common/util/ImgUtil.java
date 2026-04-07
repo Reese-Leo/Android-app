@@ -140,6 +140,10 @@ public class ImgUtil {
 
     private static void loadImageNet(Context context, ImageConfig config, ImageView imageView, QMUIProgressBar progressBar, TextView textView) {
         String url = config.getUrl();
+        if (url != null && url.length() > 1 && url.charAt(0) == '/' && new File(url).isFile()) {
+            loadImageLocalFile(context, config, imageView, progressBar, textView);
+            return;
+        }
         GlideUrl glideUrl;
         if (config.getHeaders() != null) {
             glideUrl = new GlideUrl(url, config::getHeaders);
@@ -270,6 +274,64 @@ public class ImgUtil {
                 });
     }
 
+    private static void loadImageLocalFile(Context context, ImageConfig config, ImageView imageView, QMUIProgressBar progressBar, TextView textView) {
+        String url = config.getUrl();
+        File file = new File(url);
+        progressBar.setVisibility(View.GONE);
+        textView.setVisibility(View.GONE);
+        Glide.with(context)
+                .asBitmap()
+                .load(file)
+                .transition(new BitmapTransitionOptions().crossFade())
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onLoadStarted(@Nullable Drawable placeholder) {
+                        int bitmapId = config.getDefaultBitmapId();
+                        if (Objects.equals(url, imageView.getTag())) {
+                            Bitmap bitmap = null;
+                            if (bitmapId != 0) {
+                                bitmap = drawableToBitmap(getDrawable(context, config.getDefaultBitmapId()));
+                            }
+                            imageView.setImageBitmap(bitmap);
+                            if (config.getWidth() != 0 && config.getHeight() != 0) {
+                                setLP(config.getLayout().getLayoutParams(), config.getHeight(), config.getWidth());
+                                setLP(imageView.getLayoutParams(), config.getHeight(), config.getWidth());
+                            }
+                        }
+                        MAP.put(url, LOAD_ING);
+                    }
+
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        if (Objects.equals(url, imageView.getTag())) {
+                            if (config.getEndWidth() != 0 && config.getEndHeight() != 0) {
+                                setLP(config.getLayout().getLayoutParams(), config.getEndHeight(), config.getEndWidth());
+                                setLP(imageView.getLayoutParams(), config.getEndHeight(), config.getEndWidth());
+                            } else {
+                                setLP(context, config.getLayout().getLayoutParams(), resource);
+                                setLP(context, imageView.getLayoutParams(), resource);
+                            }
+                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                            imageView.setImageBitmap(resource);
+                            MAP.put(url, LOAD_SUCCESS);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        if (Objects.equals(url, imageView.getTag())) {
+                            imageView.setImageBitmap(drawableToBitmap(getDrawable(context, config.getErrorBitmapId())));
+                            imageView.setScaleType(config.getScaleType());
+                            MAP.put(url, LOAD_FAIL);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+    }
+
     private static void setLP(Context context, ViewGroup.LayoutParams lp, Bitmap bitmap) {
         int sWidth = getScreenWidth(context);
         int bWidth = bitmap.getWidth();
@@ -291,18 +353,23 @@ public class ImgUtil {
     public static void preloadReaderImg(Context context, Content content) {
         if (content != null) {
             String url = content.getUrl();
-            Glide.with(context)
-                    .load(url)
-                    .preload();
+            if (url != null && url.length() > 1 && url.charAt(0) == '/' && new File(url).isFile()) {
+                Glide.with(context).load(new File(url)).preload();
+            } else {
+                Glide.with(context).load(url).preload();
+            }
         }
     }
 
     public static void preloadReaderImg(Context context, ImageConfig config) {
         if (config != null) {
-            GlideUrl glideUrl = new GlideUrl(config.getUrl(), config::getHeaders);
-            Glide.with(context)
-                    .load(glideUrl)
-                    .preload();
+            String url = config.getUrl();
+            if (url != null && url.length() > 1 && url.charAt(0) == '/' && new File(url).isFile()) {
+                Glide.with(context).load(new File(url)).preload();
+            } else {
+                GlideUrl glideUrl = new GlideUrl(url, config::getHeaders);
+                Glide.with(context).load(glideUrl).preload();
+            }
         }
     }
 

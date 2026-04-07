@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.List;
 
 import the.one.base.widge.TheCheckBox;
+import top.luqichuang.common.en.SourceEnum;
 import top.luqichuang.common.model.Content;
 import top.luqichuang.common.model.Entity;
 import top.luqichuang.common.model.Source;
@@ -94,6 +95,10 @@ public class ComicReaderFragment extends BaseReaderFragment {
     protected void setupOfflineDownloadIfNeeded(View bottomView) {
         LinearLayout llDownload = bottomView.findViewById(R.id.llDownload);
         if (llDownload == null) {
+            return;
+        }
+        if (entity.getSourceId() == SourceEnum.LOCAL_OFFLINE.ID) {
+            llDownload.setVisibility(View.GONE);
             return;
         }
         llDownload.setVisibility(View.VISIBLE);

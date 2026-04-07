@@ -101,7 +101,7 @@ public class GsyVideoActivity extends BaseGsyVideoActivity<StandardGSYVideoPlaye
             entity = (Entity) getIntent().getSerializableExtra("entity");
         }
         if (entity != null) {
-            presenter.loadContentInfoList(entity);
+            presenter.loadContentInfoList(entity, this);
         }
     }
 
