@@ -11,6 +11,7 @@ import top.luqichuang.mycomic.source.BaoZi;
 import top.luqichuang.mycomic.source.BiliBili;
 import top.luqichuang.mycomic.source.DaShu;
 import top.luqichuang.mycomic.source.Du;
+import top.luqichuang.mycomic.source.Guaishou;
 import top.luqichuang.mycomic.source.LocalOfflineSource;
 import top.luqichuang.mycomic.source.MH118;
 import top.luqichuang.mycomic.source.MH118W;
@@ -49,6 +50,7 @@ public enum SourceEnum {
     SI_SI(16, "思思漫画"),
     BAO_ZI(17, "包子漫画"),
     MO_JOIN(18, "MOJOIN"),
+    GUAI_SHOU(19, "怪兽漫画"),
     /** 扫描本机 OfflineChapter 目录阅读，不出现在源列表 */
     LOCAL_OFFLINE(99, "本地离线"),
     ;
@@ -74,6 +76,7 @@ public enum SourceEnum {
         MAP.put(SI_SI.ID, new SiSi());
         MAP.put(BAO_ZI.ID, new BaoZi());
         MAP.put(MO_JOIN.ID, new MoJoin());
+        MAP.put(GUAI_SHOU.ID, new Guaishou());
         MAP.put(LOCAL_OFFLINE.ID, new LocalOfflineSource());
     }
 

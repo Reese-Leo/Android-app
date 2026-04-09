@@ -157,6 +157,15 @@ public class RankFragment extends BaseDataFragment<Entity> implements RankView {
                 return url.replaceFirst(page, nPage);
             }
         }
+        // Some sites (e.g. guaishou classifications) paginate as:
+        // index.html -> page_2.html -> page_3.html ...
+        if (url.endsWith("/index.html") || url.endsWith("index.html")) {
+            return url.replaceFirst("index\\.html$", "page_" + pageNum + ".html");
+        }
+        String pageNumStr = StringUtil.match("page_(\\d+)\\.html", url);
+        if (pageNumStr != null) {
+            return url.replaceFirst("page_\\d+\\.html", "page_" + pageNum + ".html");
+        }
         return null;
     }
 
